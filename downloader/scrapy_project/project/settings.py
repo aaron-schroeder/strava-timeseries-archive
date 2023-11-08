@@ -5,12 +5,6 @@ NEWSPIDER_MODULE = "project.spiders"
 
 ROBOTSTXT_OBEY = False
 
-# EXTENSIONS = {
-#     "project.extensions.MultiActivityDataCSVExport": 500
-# }
-# DOWNLOADER_MIDDLEWARES = {
-#     "project.middleware.MultiActivityDataCSVDownloaderMiddleware": 543
-# }
 ITEM_PIPELINES = {
     "project.pipelines.MultiActivityDataCSVPipeline": 333
 }
