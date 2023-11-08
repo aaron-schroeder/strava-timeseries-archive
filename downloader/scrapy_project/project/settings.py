@@ -5,19 +5,12 @@ NEWSPIDER_MODULE = "project.spiders"
 
 ROBOTSTXT_OBEY = False
 
-# EXTENSIONS = {
-#     "project.extensions.MultiActivityDataCSVExport": 500
-# }
-# DOWNLOADER_MIDDLEWARES = {
-#     "project.middleware.MultiActivityDataCSVDownloaderMiddleware": 543
-# }
 ITEM_PIPELINES = {
     "project.pipelines.MultiActivityDataCSVPipeline": 333
 }
 
-# CSV_OUTPUT_DIR = "."
-
-# DOWNLOAD_DELAY = 1
+# where should MultiActivityDataCSVPipeline save the output CSV file?
+CSV_OUTPUT_DIR = "."  
 
 # DOWNLOAD_DELAY = 0       # dft 0?
 # CONCURRENT_ITEMS = 10    # dft 100

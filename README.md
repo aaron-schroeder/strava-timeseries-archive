@@ -1,3 +1,10 @@
+## Step 1: Start the Strava API middleware service
+
+### Option 1: Run the Docker container
+
+Create a `secrets.env` file, and include values for `STRAVA_OAUTH_CLIENT_ID`
+and `STRAVA_OAUTH_CLIENT_SECRET`. Then run the following command:
+
 # strava-timeseries-archive
 > Download all the time series data from your Strava account into a single CSV file
 
@@ -49,7 +56,6 @@ I imagine it like shaking hands with myself.
 Activate the downloader's virtual environment, then:
 ```
 pip install -r downloader/requirements.txt
-cd downloader/scrapy_project
 ```
 
 ### Step 2.1: Adjust spider settings
