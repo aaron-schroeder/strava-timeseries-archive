@@ -1,0 +1,14 @@
+version: '3'
+services:
+  strava_api_middleware_app:
+    build:
+      context: ./strava-api-middleware
+    ports:
+      - 5000:5000
+    volumes:
+      - ./data:/app/data
+    environment:
+      - STRAVA_OAUTH_CLIENT_ID=${STRAVA_OAUTH_CLIENT_ID}
+      - STRAVA_OAUTH_CLIENT_SECRET=${STRAVA_OAUTH_CLIENT_SECRET}
+      - STRAVA_OAUTH_TOKEN_STORAGE_DIR=/app/data
+    command: ["flask", "--app", "flask_app.app", "run", "--host=0.0.0.0"]
