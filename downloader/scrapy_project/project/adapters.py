@@ -12,8 +12,8 @@ from dddhns.translation import AbstractActivityDataTranslator
 
 class MultiActivityDataCSVFileExportRepository(AbstractExportRepository):
     def __init__(self, directory):
+        os.makedirs(directory, exist_ok=True)
         self.directory = directory
-        os.mkdir(self.directory)
 
         self.repo_file_path = os.path.join(self.directory, 'multi-activity.csv')
         self.metadata_file_path = os.path.join(self.directory, 'metadata.json')
