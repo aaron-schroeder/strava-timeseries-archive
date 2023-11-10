@@ -1,5 +1,7 @@
 # strava-timeseries-archive
-> Download all the time series data from your Strava account into a single CSV file
+> Download all the time series data in your Strava account history
+> - into a single CSV file
+> - into JSON files, one per activity
 
 This app solves a number of problems you'd encounter when downloading personal
 activity data in bulk from the Strava API.
@@ -68,10 +70,18 @@ pip install -r downloader/requirements.txt
 
 ### Step 2.1: Adjust spider settings
 
-Modify `downloader/project/settings.py`: adjust `DOWNLOAD_DELAY` and 
-`AUTOTHROTTLE_TARGET_CONCURRENCY` to suit your app's rate limit situation. 
-At the time of this writing (November 8, 2023) the default limits for new
-apps are 100 requests per 15 minute interval and 1000 requests per day.^[https://communityhub.strava.com/t5/developer-knowledge-base/rate-limits/ta-p/4289]
+Modify `downloader/scrapy_project/project/settings.py` to meet your needs.
+
+Decide whether you'd like to download your time series data into a single
+large CSV file, many small JSON files, or both. Designate your choice by
+commenting/uncommenting each pipeline within the `ITEM_PIPELINES` setting.
+Be sure to set the desired output directory for each activated pipeline
+using the settings `CSV_OUTPUT_DIR` and/or `JSON_OUTPUT_DIR`.
+
+Adjust `DOWNLOAD_DELAY` and `AUTOTHROTTLE_TARGET_CONCURRENCY` to suit your
+app's rate limit situation. At the time of this writing (November 8, 2023)
+the default limits for new apps are 100 requests per 15 minute interval and
+1000 requests per day.^[https://communityhub.strava.com/t5/developer-knowledge-base/rate-limits/ta-p/4289]
 
 ### Step 2.2: Run the spider
 
