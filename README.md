@@ -86,6 +86,6 @@ the default limits for new apps are 100 requests per 15 minute interval and
 ### Step 2.2: Run the spider
 
 ```
-cd downloader/project
+cd downloader/scrapy_project
 scrapy crawl activities
 ```
