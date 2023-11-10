@@ -9,6 +9,8 @@ import dddhns.domain.language as lang
 from dddhns.repository import AbstractExportRepository
 from dddhns.translation import AbstractActivityDataTranslator
 
+from .items import StreamSet
+
 
 class MultiActivityDataCSVFileExportRepository(AbstractExportRepository):
     def __init__(self, directory):
@@ -56,17 +58,17 @@ class MultiActivityDataCSVFileExportRepository(AbstractExportRepository):
 
 
 class StravaAPIScrapyItemActivityDataTranslator(AbstractActivityDataTranslator):
-    def to_activity_data(self, item) -> ActivityData:
-        id = item['id']
-        type = item['type']
-        timeseries = self._to_timeseries(item)
+    def to_activity_data(self, stream_set: StreamSet) -> ActivityData:
+        id = stream_set['activity_id']
+        type = stream_set['type']
+        timeseries = self._to_timeseries(stream_set)
         return ActivityData(id, type, timeseries)
 
-    def _to_timeseries(self, item) -> Timeseries:
+    def _to_timeseries(self, stream_set: StreamSet) -> Timeseries:
         dataframe = pd.DataFrame({stream['type']: stream['data']
-                                  for stream in item['streams']})
+                                  for stream in stream_set['streams']})
 
-        start_dt_utc = datetime.datetime.strptime(item['start_date'], 
+        start_dt_utc = datetime.datetime.strptime(stream_set['start_date'], 
                                                   '%Y-%m-%dT%H:%M:%SZ')
         dataframe[lang.TIMESTAMP] = start_dt_utc   \
             + pd.to_timedelta(dataframe[lang.TIME], unit='s')
