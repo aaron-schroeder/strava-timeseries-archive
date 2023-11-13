@@ -66,7 +66,7 @@ class StravaAPIScrapyItemActivityDataTranslator(AbstractActivityDataTranslator):
 
     def _to_timeseries(self, stream_set: StreamSet) -> Timeseries:
         dataframe = pd.DataFrame({stream['type']: stream['data']
-                                  for stream in stream_set['streams']})
+                                  for stream in stream_set['data']})
 
         start_dt_utc = datetime.datetime.strptime(stream_set['start_date'], 
                                                   '%Y-%m-%dT%H:%M:%SZ')

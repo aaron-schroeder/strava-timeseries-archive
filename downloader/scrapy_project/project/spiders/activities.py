@@ -60,7 +60,7 @@ class AthleteActivitiesStravaAPISpider(scrapy.Spider):
         all_available_keys = ('time,cadence,distance,altitude,velocity_smooth,'
                               'heartrate,latlng,watts,temp,moving,grade_smooth')
 
-        activity_id = summary_activity.get('activity_id')
+        activity_id = summary_activity['activity_id']
         
         resource_url = (f'{self.url_base}/activities/{activity_id}'
                         f'/streams?keys={all_available_keys}')
@@ -68,7 +68,7 @@ class AthleteActivitiesStravaAPISpider(scrapy.Spider):
         return scrapy.http.Request(
             resource_url,
             meta={'activity_id': activity_id,
-                  'start_date': summary_activity.get('start_date'),
-                  'type': summary_activity.get('type')},
+                  'start_date': summary_activity['data']['start_date'],
+                  'type': summary_activity['data']['type']},
             callback=self.parse_activity_streams
         )
