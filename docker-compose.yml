@@ -6,9 +6,22 @@ services:
     ports:
       - 5000:5000
     volumes:
-      - ./data:/app/data
+      - ${STRAVA_OAUTH_TOKEN_STORAGE_DIR}:/app/data
     environment:
       - STRAVA_OAUTH_CLIENT_ID=${STRAVA_OAUTH_CLIENT_ID}
       - STRAVA_OAUTH_CLIENT_SECRET=${STRAVA_OAUTH_CLIENT_SECRET}
       - STRAVA_OAUTH_TOKEN_STORAGE_DIR=/app/data
     command: ["flask", "--app", "flask_app.app", "run", "--host=0.0.0.0"]
+  scraper:
+    build:
+      context: ./downloader
+    ports:
+      - 5001:5000
+    depends_on: 
+      - strava_api_middleware_app
+    volumes:
+      - ${SCRAPER_JSON_OUTPUT_DIR}:/app/data
+    environment:
+      - JSON_OUTPUT_DIR=/app/data
+      - STRAVA_PROXY_SERVER_URL=http://strava_api_middleware_app:5000/proxy
+    command: ["tail", "-f", "/dev/null"]
