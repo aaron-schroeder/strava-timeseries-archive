@@ -1,10 +1,10 @@
 version: '3'
 services:
-  strava_api_middleware_app:
+  strava-api-middleware-app:
     build:
       context: ./strava-api-middleware
     ports:
-      - 5000:5000
+      - 5002:5000
     volumes:
       - ${STRAVA_OAUTH_TOKEN_STORAGE_DIR}:/app/data
     environment:
@@ -18,10 +18,10 @@ services:
     ports:
       - 5001:5000
     depends_on: 
-      - strava_api_middleware_app
+      - strava-api-middleware-app
     volumes:
       - ${SCRAPER_JSON_OUTPUT_DIR}:/app/data
     environment:
       - JSON_OUTPUT_DIR=/app/data
-      - STRAVA_PROXY_SERVER_URL=http://strava_api_middleware_app:5000/proxy
+      - STRAVA_PROXY_SERVER_URL=http://strava-api-middleware-app:5000/proxy
     command: ["tail", "-f", "/dev/null"]
