@@ -1,5 +1,6 @@
 import json
 import os
+import re
 from urllib.parse import urlparse
 
 from scrapy.exceptions import IgnoreRequest
@@ -29,15 +30,24 @@ class JSONDocumentDownloaderMiddleware:
             for summary_activity in response.json():
                 relative_file_path = f'activities/{summary_activity["id"]}/summary.json'
                 self._save_data(summary_activity, relative_file_path)
-        # elif subpath == '/activities/{id}/streams':
-        else:
+        elif re.match(r'^/activities/(\d+)/streams$', subpath):
             # Save the `StreamSet` entity
             relative_file_path = subpath.strip('/') + '.json'
             resource_data = response.json()
+            # De-facto data validation: if the response data matches the 
+            # expected format (a list of `Stream` entities), save as-is.
+            # If the response data indicates an error (assumed to be 404
+            # due to the activity not having streams), save an empty list
+            # which is equivalent to an empty streamset. 
             if isinstance(resource_data, list):
                 self._save_data(resource_data, relative_file_path)
             elif resource_data.get('error', None) == 'No resource found.':
                 self._save_data([], relative_file_path)
+        elif re.match(r'^/activities/(\d+)$', subpath):
+            # Save the `DetailedActivity` entity
+            relative_file_path = subpath.strip('/') + '.json'
+            resource_data = response.json()
+            self._save_data(resource_data, relative_file_path)
         return response
 
     def _data_exists(self, subpath):

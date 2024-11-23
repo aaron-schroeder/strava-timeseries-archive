@@ -30,6 +30,7 @@ class NewAthleteActivitiesStravaAPISpider(scrapy.Spider):
 
         for activity_summary in data:
             yield self.create_activity_streams_request(activity_summary)
+            yield self.create_activity_request(activity_summary)
 
     def parse_activity_streams(self, response):
         return None
@@ -43,6 +44,9 @@ class NewAthleteActivitiesStravaAPISpider(scrapy.Spider):
         # if failure.value.response.status == 404:
         #     # insert item as a bad response
         #     return None
+
+    def parse_activity(self, response):
+        return None
 
     def create_athlete_activities_request(self, page=1):
         return scrapy.http.Request(
@@ -65,3 +69,11 @@ class NewAthleteActivitiesStravaAPISpider(scrapy.Spider):
                                    callback=self.parse_activity_streams,
                                    errback=self.parse_activity_streams_error)
     
+    def create_activity_request(self, activity_summary):
+        activity_id = activity_summary['id']
+        
+        resource_url = (f'{self.settings.get("STRAVA_PROXY_SERVER_URL")}/'
+                        f'activities/{activity_id}')
+
+        return scrapy.http.Request(resource_url,
+                                   callback=self.parse_activity)
