@@ -1,6 +1,6 @@
 import os
 
-from oauth.domain.model import OAuthClient
+from oauth.domain.model import OAuthClient, TrainingPeaksOAuthClient
 from ratelimit.domain.model import RateLimit
 
 from .repository import FileAccessTokenRepository
@@ -16,3 +16,11 @@ oauth_client = OAuthClient(
 )
 
 rate_limit = RateLimit()
+
+tp_repo = FileAccessTokenRepository(
+    os.getenv('TP_OAUTH_TOKEN_STORAGE_DIR')
+)
+
+tp_oauth_client = TrainingPeaksOAuthClient(
+    os.getenv('TP_PRODUCTION_AUTH_COOKIE')
+)

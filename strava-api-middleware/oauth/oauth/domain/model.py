@@ -2,6 +2,7 @@ from dataclasses import dataclass
 import datetime
 from urllib.parse import urlencode, urlparse
 
+from dateutil import parser
 import requests
 
 
@@ -21,9 +22,15 @@ class AccessTokenObject(ValueObject):
 
     @classmethod
     def from_dict(cls, token_data):
-        return cls(bearer_token=token_data['access_token'],
-                   refresh_token=token_data['refresh_token'],
-                   expires_at=token_data['expires_at'])
+        bearer_token_str = token_data.get('access_token')
+        refresh_token_str = token_data.get('refresh_token')
+        if 'expires_at' in token_data:
+            expiration_timestamp = token_data.get('expires_at')
+        else:
+            expiration_timestamp = int(parser.isoparse(token_data.get('expires')).timestamp())
+        return cls(bearer_token=bearer_token_str,
+                   refresh_token=refresh_token_str,
+                   expires_at=expiration_timestamp)
 
     @property
     def is_expired(self):
@@ -49,10 +56,9 @@ class AccessToken(Entity):
   
     @classmethod
     def from_dict(cls, token_data):
-        athlete_data = token_data.get('athlete')
-        assert athlete_data is not None
+        athlete_id = token_data['athlete']['id']
         access_token_object = AccessTokenObject.from_dict(token_data)
-        return cls(athlete_id=athlete_data['id'], 
+        return cls(athlete_id=athlete_id, 
                    access_token_object=access_token_object)
 
     def get_bearer_token(self):
@@ -64,6 +70,9 @@ class AccessToken(Entity):
     def to_dict(self):
         return dict(athlete=dict(id=self.athlete_id), 
                     **self.access_token_object.to_dict())
+    
+    def is_expired(self):
+        return self.access_token_object.is_expired
     
 
 class OAuthClient:
@@ -102,6 +111,25 @@ class OAuthClient:
         access_token.access_token_object = AccessTokenObject.from_dict(data)
         return access_token
     
+
+class TrainingPeaksOAuthClient:
+    def __init__(self, production_tp_auth_cookie: str):
+        self._production_tp_auth_cookie = production_tp_auth_cookie
+
+    def get_token(self) -> AccessToken:
+        """Based on OAuthClient.exchange_for_token(access_code)"""
+        url = 'https://tpapi.trainingpeaks.com/users/v3/token'
+        cookies = {
+            'Production_tpAuth': self._production_tp_auth_cookie
+        }
+        response = requests.get(url, cookies=cookies)
+        assert response.status_code == 200
+        resp_data = response.json()
+        # return resp_data # DEBUG
+        token_data = resp_data['token']
+        ato = AccessTokenObject.from_dict(token_data)
+        return AccessToken(11111111, ato)
+
 
 # class AuthenticatedHttpClient:
 #     def __init__(self, token: AccessToken):

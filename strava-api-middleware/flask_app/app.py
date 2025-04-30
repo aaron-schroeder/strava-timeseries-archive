@@ -2,6 +2,7 @@ from flask import Flask, redirect, url_for
 
 from flask_app.authorization import bp as authorization_blueprint
 from flask_app.proxy import bp as proxy_blueprint
+from flask_app.proxy_tp import bp as proxy_tp_blueprint
 
 
 def create_app():
@@ -13,10 +14,11 @@ def create_app():
 
     app.register_blueprint(authorization_blueprint, url_prefix='/auth')
     app.register_blueprint(proxy_blueprint, url_prefix='/proxy')
+    app.register_blueprint(proxy_tp_blueprint, url_prefix='/proxy-tp')
 
     return app
 
 
 if __name__ == '__main__':
     app = create_app()
-    app.run()
+    app.run(debug=True)

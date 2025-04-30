@@ -26,6 +26,9 @@ JSON_OUTPUT_DIR = os.getenv('JSON_OUTPUT_DIR', '.')
 STRAVA_PROXY_SERVER_URL = os.getenv('STRAVA_PROXY_SERVER_URL', 
                                     'http://localhost:5000/proxy')
 
+TP_PROXY_SERVER_URL = os.getenv('TP_PROXY_SERVER_URL', 
+                                'http://localhost:5000/proxy-tp')
+
 # DOWNLOAD_DELAY = 0       # default 0?
 # CONCURRENT_ITEMS = 10    # default 100
 # CONCURRENT_REQUESTS = 5  # default 16
